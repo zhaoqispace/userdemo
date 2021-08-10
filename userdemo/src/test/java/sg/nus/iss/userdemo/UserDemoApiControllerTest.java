@@ -27,11 +27,13 @@ import java.util.Set;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
 
+import org.junit.Before;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -42,19 +44,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import sg.nus.iss.userdemo.controller.UserController;
-import sg.nus.iss.userdemo.model.RoleType;
+import sg.nus.iss.userdemo.controller.UserDemoApiController;
 import sg.nus.iss.userdemo.model.User;
 import sg.nus.iss.userdemo.service.UserService;
 
 
 @SpringBootTest
-public class ControllerTest {
+@AutoConfigureMockMvc
+public class UserDemoApiControllerTest {
 	@Autowired
 	MockMvc mockMvc;
 
@@ -64,29 +68,27 @@ public class ControllerTest {
 	@MockBean
 	UserService uService;
 	
+	@Autowired
+    WebApplicationContext wac;
+	
+	
 	// define dummy data
-	User user1 = new User((long)1, "Alex", LocalDate.of(1990, 02, 18), 
-			"Hello I am Alex", "alex@gmail.com", LocalDate.now(),
-			RoleType.GENERAL_USER);
+	User user1 = new User(1, "Alex", LocalDate.of(1990, 02, 18), 
+			"Hello I am Alex", "alex@gmail.com", LocalDate.now());
 	
-	User user2 = new User((long)2, "Max", LocalDate.of(1987, 03, 05), 
-			"Hello I am Max", "max@gmail.com", LocalDate.now(),
-			RoleType.GENERAL_USER);
+	User user2 = new User(2, "Max", LocalDate.of(1987, 03, 05), 
+			"Hello I am Max", "max@gmail.com", LocalDate.now());
 	
-	User user3 = new User((long)3, "Lily", LocalDate.of(1988, 11, 20), 
-			"Hello I am Lily, I am the Admin", "lily@gmail.com", LocalDate.now(),
-			RoleType.ADMIN);
+	User user3 = new User(3, "Lily", LocalDate.of(1988, 11, 20), 
+			"Hello I am Lily, I am the Admin", "lily@gmail.com", LocalDate.now());
 	
-	User user4 = new User((long)4, "CY", LocalDate.of(1993, 9, 6), 
-			"Hello I am CY", "cy@gmail.com", LocalDate.now(),
-			RoleType.GENERAL_USER);
+	User user4 = new User(4, "CY", LocalDate.of(1993, 9, 6), 
+			"Hello I am CY", "cy@gmail.com", LocalDate.now());
 	
-	User user5 = new User((long)5, "Brandon", LocalDate.of(1992, 5, 1), 
-			"Hello I am Brandon", "brandon@gmail.com", LocalDate.now(),
-			RoleType.GENERAL_USER);
+	User user5 = new User(5, "Brandon", LocalDate.of(1992, 5, 1), 
+			"Hello I am Brandon", "brandon@gmail.com", LocalDate.now());
 	
 	
-
 	
 	// test the method getAllUsers()
 	@Test
@@ -119,7 +121,7 @@ public class ControllerTest {
 	@Test
 	public void getUserbyIdTest() throws Exception{
 		
-		Mockito.when(uService.findUserById((long) 1)).thenReturn(user1);
+		Mockito.when(uService.findUserById(1)).thenReturn(user1);
 		
 			mockMvc.perform(MockMvcRequestBuilders.get("/users/1")
 			.contentType(MediaType.APPLICATION_JSON))
@@ -131,9 +133,8 @@ public class ControllerTest {
 	// Test the method addNewUser()
 	@Test
 	public void addNewUserTest() throws Exception {
-		User user6 = new User((long)6, "Ronnie", LocalDate.of(1987, 6, 1), 
-				"Hello I am Ronnie", "ronnie@gmail.com", LocalDate.now(),
-				RoleType.GENERAL_USER);
+		User user6 = new User(6, "Ronnie", LocalDate.of(1987, 6, 1), 
+				"Hello I am Ronnie", "ronnie@gmail.com", LocalDate.now());
 		
 		MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("users/adduser")
 	            .contentType(MediaType.APPLICATION_JSON)
@@ -151,7 +152,7 @@ public class ControllerTest {
 	// Test the method deleteUser()
 	@Test
 	public void delelteUserTest() throws Exception{
-		long userid = (long) 1;
+		int userid = 1;
 		Mockito.when(uService.findUserById(userid)).thenReturn(user1);
 
 		mockMvc.perform(MockMvcRequestBuilders.delete("/users/delete/1")
@@ -176,14 +177,9 @@ public class ControllerTest {
 		
 		mockMvc.perform(mockRequest)
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id", is((long) 2)))
+				.andExpect(jsonPath("$.id", is(2)))
 				.andExpect(jsonPath("$.name", is("max123")))
 				.andExpect(jsonPath("$.email",is("max123@gmail")));
 	
 	}
-	
-
-	
-
-
 }

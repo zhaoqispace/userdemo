@@ -2,6 +2,7 @@ package sg.nus.iss.userdemo.Repo;
 
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,19 +13,9 @@ import sg.nus.iss.userdemo.model.User;
 
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-
-		User findUserByEmail(String email);
+public interface UserRepository extends JpaRepository<User, Integer> {
 
 		
-		@Query(value = "SELECT u.followers,ST_Distance(u.address,ST_SetSRID(ST_Point(:x,:y),4326)) AS distance "
-	            + "FROM Useru "
-	            + "ORDER BY u.address <-> ST_SetSRID(ST_Point(:x,:y),4326) "
-	            + "LIMIT 5"
-	             , nativeQuery = true)
-		List<User> getFollowersByDistanceFromUser(@Param("x") Double x, @Param("y") Double y);
-
+		User findByEmail(String email);
 		List<User> findUsersByName(String username);
-		
-	
 }

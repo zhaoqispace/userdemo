@@ -2,6 +2,7 @@ package sg.nus.iss.userdemo.model;
 
 import java.awt.Point;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -9,19 +10,20 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Past;
 
+import org.springframework.util.CollectionUtils;
+
+
 @Entity
-@Table
+@Table(name = "user")
 public class User {
 	
 	@Id
 	@GeneratedValue (strategy = GenerationType.IDENTITY)
-	private Long id;
+	private int id;
 	private String name;
 	
 	@Past
 	private LocalDate dob;
-	
-//	private String address;
 	
 	private Point address;
 	
@@ -30,23 +32,47 @@ public class User {
 	private String email;
 	private LocalDate createAt;
 	
-	private RoleType role;
 	
 	@ManyToMany
-	@JoinTable(name="followerTable")
-	private Set<User> followers;
+	@JoinTable(name = "user_friends", joinColumns = @JoinColumn(name = "userId") , inverseJoinColumns = @JoinColumn(name = "friendId") )
+	private Set<User> userFriends;
 	
-	@ManyToMany
-	@JoinTable(name="followingTable")
-	private Set<User> followings;
+
+	// add userFriends
+	public void addUserFriends(User user) {
+		if (CollectionUtils.isEmpty(this.userFriends)) {
+			this.userFriends = new HashSet<>();
+		}
+		this.userFriends.add(user);
+	}
 	
+
 	// constructor without arguments
 	public User() { }
 	
 	
-	// constructor for test purpose
-	public User(Long id, String name, @Past LocalDate dob, String description, @NotEmpty String email,
-			LocalDate createAt, RoleType role) {
+	// constructors for test purpose	
+	
+	public User(int id, String name, @Past LocalDate dob, String description, @NotEmpty String email) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.dob = dob;
+		this.description = description;
+		this.email = email;
+	}
+	
+	public User( String name, @Past LocalDate dob, String description, @NotEmpty String email) {
+		super();
+		this.name = name;
+		this.dob = dob;
+		this.description = description;
+		this.email = email;
+	}
+
+	
+	public User(int id, String name, @Past LocalDate dob, String description, @NotEmpty String email,
+			LocalDate createAt) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -54,14 +80,10 @@ public class User {
 		this.description = description;
 		this.email = email;
 		this.createAt = createAt;
-		this.role = role;
 	}
 	
-
-	
-	// constructors including all attributes
-	public User(Long id, String name, @Past LocalDate dob, Point address, String description, @NotEmpty String email,
-			LocalDate createAt, RoleType role, Set<User> followers, Set<User> followings) {
+	public User(int id, String name, @Past LocalDate dob, Point address, String description, @NotEmpty String email,
+			LocalDate createAt) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -70,29 +92,45 @@ public class User {
 		this.description = description;
 		this.email = email;
 		this.createAt = createAt;
-		this.role = role;
-		this.followers = followers;
-		this.followings = followings;
 	}
 	
+	
+	
+	
+	// constructors including all attributes
+	public User(int id, String name, @Past LocalDate dob, Point address, String description, @NotEmpty String email,
+			LocalDate createAt, Set<User> followers, Set<User> userFriends) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.dob = dob;
+		this.address = address;
+		this.description = description;
+		this.email = email;
+		this.createAt = createAt;
+		this.userFriends = userFriends;
+	}
 	
 
 
 	// Getters and Setters
+	
 
 
-
-	public Long getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+
+	public void setId(int id) {
 		this.id = id;
 	}
+
 
 	public String getName() {
 		return name;
 	}
+
 
 	public void setName(String name) {
 		this.name = name;
@@ -138,28 +176,13 @@ public class User {
 		this.createAt = createAt;
 	}
 
-	public RoleType getRole() {
-		return role;
+
+	public Set<User> getUserFriends() {
+		return userFriends;
 	}
 
-	public void setRole(RoleType role) {
-		this.role = role;
-	}
-
-	public Set<User> getFollowers() {
-		return followers;
-	}
-
-	public void setFollowers(Set<User> followers) {
-		this.followers = followers;
-	}
-
-	public Set<User> getFollowings() {
-		return followings;
-	}
-
-	public void setFollowings(Set<User> followings) {
-		this.followings = followings;
+	public void setUserFriends(Set<User> userFriends) {
+		this.userFriends = userFriends;
 	}
 	
 	

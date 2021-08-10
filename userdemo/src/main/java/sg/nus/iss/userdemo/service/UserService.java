@@ -1,35 +1,39 @@
 package sg.nus.iss.userdemo.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import javax.validation.Valid;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import sg.nus.iss.userdemo.model.User;
-
+import sg.nus.iss.userdemo.request.UserFriendsRequestEntity;
 
 public interface UserService {
 
 	
-	
 	List<User> getAllUsers();
 	
-	User findUserById(Long id);
+	User findUserById(int id);
+	
+	User addNewUser(User user);
 
-	void addNewUser(User user);
+	void deleteUser(int userId);
 
-	void deleteUser(Long userId);
+	User updateUser(int userId, @Valid User userDetails);
 
-	void updateUser(Long userId, String name, String email);
+	Set<String> getAllFriendsByUserId(int userId);
+	
+	
+	ResponseEntity<Map<String, Object>> addUserFriends(UserFriendsRequestEntity userFriendsRequestEntity);
 
-	Set<User> getAllFollowersbyuserId(Long userId);
 
-	Set<User> getAllFollowingsbyuserId(Long userId);
+	List<User> findUsersByName(String name);
 
-	List<User> findUsersByName(String username);
-
-	List<User> getNearbyFollowers(double x, double y);
-
+	List<String> getFriendsByDistance(String name);
 
 
 }
