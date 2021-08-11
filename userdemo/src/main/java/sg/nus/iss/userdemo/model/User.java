@@ -34,26 +34,31 @@ public class User {
 	
 	
 	@ManyToMany
-	@JoinTable(name = "user_friends", joinColumns = @JoinColumn(name = "userId") , inverseJoinColumns = @JoinColumn(name = "friendId") )
+	@JoinTable(name = "user_friends", 
+	joinColumns = @JoinColumn(name = "userId"), 
+	inverseJoinColumns = @JoinColumn(name = "friendId") )
 	private Set<User> userFriends;
 	
-
-	// add userFriends
-	public void addUserFriends(User user) {
+	// the method to add UserFriends
+	public void addUserFriends(User user2) {
+		
 		if (CollectionUtils.isEmpty(this.userFriends)) {
 			this.userFriends = new HashSet<>();
 		}
-		this.userFriends.add(user);
+		
+		userFriends.add(user2);
 	}
-	
+
 
 	// constructor without arguments
 	public User() { }
 	
-	
 	// constructors for test purpose	
-	
-	public User(int id, String name, @Past LocalDate dob, String description, @NotEmpty String email) {
+	public User(int id, 
+			String name, 
+			@Past LocalDate dob, 
+			String description, 
+			@NotEmpty String email) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -62,7 +67,10 @@ public class User {
 		this.email = email;
 	}
 	
-	public User( String name, @Past LocalDate dob, String description, @NotEmpty String email) {
+	public User( String name, 
+			@Past LocalDate dob, 
+			String description, 
+			@NotEmpty String email) {
 		super();
 		this.name = name;
 		this.dob = dob;
@@ -71,7 +79,11 @@ public class User {
 	}
 
 	
-	public User(int id, String name, @Past LocalDate dob, String description, @NotEmpty String email,
+	public User(int id, 
+			String name, 
+			@Past LocalDate dob, 
+			String description,
+			@NotEmpty String email,
 			LocalDate createAt) {
 		super();
 		this.id = id;
@@ -82,7 +94,12 @@ public class User {
 		this.createAt = createAt;
 	}
 	
-	public User(int id, String name, @Past LocalDate dob, Point address, String description, @NotEmpty String email,
+	public User(int id, 
+			String name, 
+			@Past LocalDate dob, 
+			Point address, 
+			String description, 
+			@NotEmpty String email,
 			LocalDate createAt) {
 		super();
 		this.id = id;
@@ -95,11 +112,16 @@ public class User {
 	}
 	
 	
-	
-	
 	// constructors including all attributes
-	public User(int id, String name, @Past LocalDate dob, Point address, String description, @NotEmpty String email,
-			LocalDate createAt, Set<User> followers, Set<User> userFriends) {
+	public User(int id, 
+			String name, 
+			@Past LocalDate dob, 
+			Point address, 
+			String description, 
+			@NotEmpty String email,
+			LocalDate createAt, 
+			Set<User> followers, 
+			Set<User> userFriends) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -114,9 +136,6 @@ public class User {
 
 
 	// Getters and Setters
-	
-
-
 	public int getId() {
 		return id;
 	}
@@ -184,7 +203,5 @@ public class User {
 	public void setUserFriends(Set<User> userFriends) {
 		this.userFriends = userFriends;
 	}
-	
-	
 
 }

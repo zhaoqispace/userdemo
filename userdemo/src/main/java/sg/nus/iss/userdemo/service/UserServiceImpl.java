@@ -36,26 +36,29 @@ public class UserServiceImpl implements UserService {
 		this.uRepo = uRepo;
 	}
 
-	// get all users
+	// find all users
 	@Override
-	public List<User> getAllUsers() {
+	public List<User> findAllUsers() {
 		
 		return uRepo.findAll();
 	}
 	
-	// find all users by name
+	// find a user by Id
+	@Override
+	public User findUserById(int id) {
+			
+		return uRepo.findById(id).get();
+	}
+	
+	
+	// find users by name
 	@Override
 	public List<User> findUsersByName(String username) {
 		
 		return uRepo.findUsersByName(username);
 	}
 	
-	// find user by Id
-	@Override
-	public User findUserById(int id) {
-		
-		return uRepo.findById(id).get();
-	}
+	
 
 	// add new user
 	@Override
@@ -77,7 +80,8 @@ public class UserServiceImpl implements UserService {
 		boolean exists = uRepo.existsById(userId);
 		
 		if (!exists) {
-			throw new IllegalStateException("user with id" + userId + "doesn't exist");
+			throw new IllegalStateException(
+					"user with id" + userId + "doesn't exist");
 		}
 		uRepo.deleteById(userId);
 	}
@@ -90,11 +94,9 @@ public class UserServiceImpl implements UserService {
 				.orElseThrow(() -> new IllegalStateException(
 						"user with id" + userId + "doesn't exist"));
 		userFound.setName(userDetails.getName());
-		userFound.setDob(userDetails.getDob());
 		userFound.setDescription(userDetails.getDescription());
 		userFound.setEmail(userDetails.getEmail());
-			
-		
+				
 		User updatedUser = uRepo.save(userFound);
 		return updatedUser;
 		
@@ -102,7 +104,8 @@ public class UserServiceImpl implements UserService {
 	
 	
 	
-	//given an email, if user not exists, save user; if user exists, return user.
+	// given an email, if user not exists, save user; 
+	// if user exists, return user.
 	private User saveIfNotExist(String email) {
 
 		User existingUser = this.uRepo.findByEmail(email);
@@ -117,24 +120,28 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	
-	// add friends with two different emails
+	// add friends with two different email
 	@Override
-	public ResponseEntity<Map<String, Object>> addUserFriends(UserFriendsRequestEntity userFriendsRequestEntity) {
+	public ResponseEntity<Map<String, Object>> addUserFriends(
+			UserFriendsRequestEntity userFriendsRequestEntity) {
 
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		if (userFriendsRequestEntity == null) {
 			result.put("Error : ", "Invalid request");
-			return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Map<String, Object>>(
+					result, HttpStatus.BAD_REQUEST);
 		}
 
 		if (CollectionUtils.isEmpty(userFriendsRequestEntity.getFriends())) {
 			result.put("Error : ", "Friend list cannot be empty");
-			return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Map<String, Object>>(
+					result, HttpStatus.BAD_REQUEST);
 		}
 		if (userFriendsRequestEntity.getFriends().size() != 2) {
 			result.put("Info : ", "Please provide 2 emails to make them friends");
-			return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Map<String, Object>>(
+					result, HttpStatus.BAD_REQUEST);
 		}
 
 		String email1 = userFriendsRequestEntity.getFriends().get(0);
@@ -142,7 +149,8 @@ public class UserServiceImpl implements UserService {
 
 		if (email1.equals(email2)) {
 			result.put("Info : ", "Cannot make friends, if users are same");
-			return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Map<String, Object>>(
+					result, HttpStatus.BAD_REQUEST);
 		}
 
 		User user1 = null;
@@ -152,7 +160,8 @@ public class UserServiceImpl implements UserService {
 
 		if (user1.getUserFriends().contains(user2)) {
 			result.put("Info : ", "Can't add, they are already friends");
-			return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
+			return new ResponseEntity<Map<String, Object>>(
+					result, HttpStatus.OK);
 		}
 
 		// add user2 to the friend list of user1
@@ -165,7 +174,8 @@ public class UserServiceImpl implements UserService {
 		
 		result.put("Success", true);
 
-		return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
+		return new ResponseEntity<Map<String, Object>>(
+				result, HttpStatus.OK);
 	}
 	
 	
@@ -178,7 +188,11 @@ public class UserServiceImpl implements UserService {
 							"user with id" + userId + "doesn't exist"));
 			
 		// friends can be null
-		Set<String> friendsEmails = user.getUserFriends().stream().map(User::getEmail).collect(Collectors.toSet());		
+		Set<String> friendsEmails = 
+				user.getUserFriends()
+					.stream()
+					.map(User::getEmail)
+					.collect(Collectors.toSet());		
 		
 		return friendsEmails;
 	}
@@ -212,7 +226,9 @@ public class UserServiceImpl implements UserService {
 			for (User friend: friends) {
 				double friendx = friend.getAddress().getX();
 				double friendy = friend.getAddress().getY();
-				double distance = Math.sqrt((userx - friendx) * (userx - friendx) + (usery - friendy) *  (usery - friendy));	
+				double distance = 
+						Math.sqrt((userx - friendx) * (userx - friendx) + (usery - friendy) *  (usery - friendy));	
+				
 				// put in the map: friend is key, distance is value
 				friends_distances.put(friend, distance);
 			}

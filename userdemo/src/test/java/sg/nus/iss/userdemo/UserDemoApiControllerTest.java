@@ -73,20 +73,25 @@ public class UserDemoApiControllerTest {
 	
 	
 	// define dummy data
-	User user1 = new User(1, "Alex", LocalDate.of(1990, 02, 18), 
-			"Hello I am Alex", "alex@gmail.com", LocalDate.now());
+	User user1 = new User(1, "Alex", 
+			LocalDate.of(1990, 02, 18), "Hello I am Alex", 
+			"alex@gmail.com", LocalDate.now());
 	
-	User user2 = new User(2, "Max", LocalDate.of(1987, 03, 05), 
-			"Hello I am Max", "max@gmail.com", LocalDate.now());
+	User user2 = new User(2, "Max", 
+			LocalDate.of(1987, 03, 05), "Hello I am Max", 
+			"max@gmail.com", LocalDate.now());
 	
-	User user3 = new User(3, "Lily", LocalDate.of(1988, 11, 20), 
-			"Hello I am Lily, I am the Admin", "lily@gmail.com", LocalDate.now());
+	User user3 = new User(3, "Lily", 
+			LocalDate.of(1988, 11, 20), "Hello I am Lily", 
+			"lily@gmail.com", LocalDate.now());
 	
-	User user4 = new User(4, "CY", LocalDate.of(1993, 9, 6), 
-			"Hello I am CY", "cy@gmail.com", LocalDate.now());
+	User user4 = new User(4, "CY", 
+			LocalDate.of(1993, 9, 6), "Hello I am CY", 
+			"cy@gmail.com", LocalDate.now());
 	
-	User user5 = new User(5, "Brandon", LocalDate.of(1992, 5, 1), 
-			"Hello I am Brandon", "brandon@gmail.com", LocalDate.now());
+	User user5 = new User(5, "Brandon", 
+			LocalDate.of(1992, 5, 1), "Hello I am Brandon", 
+			"brandon@gmail.com", LocalDate.now());
 	
 	
 	
@@ -100,7 +105,7 @@ public class UserDemoApiControllerTest {
 		records.add(user4);
 		records.add(user5);
 		
-		Mockito.when(uService.getAllUsers()).thenReturn(records);
+		Mockito.when(uService.findAllUsers()).thenReturn(records);
 		
 		// Execute the GET request
 		mockMvc.perform(get("/users"))
@@ -136,10 +141,11 @@ public class UserDemoApiControllerTest {
 		User user6 = new User(6, "Ronnie", LocalDate.of(1987, 6, 1), 
 				"Hello I am Ronnie", "ronnie@gmail.com", LocalDate.now());
 		
-		MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("users/adduser")
-	            .contentType(MediaType.APPLICATION_JSON)
-	            .accept(MediaType.APPLICATION_JSON)
-	            .content(this.mapper.writeValueAsString(user6));
+		MockHttpServletRequestBuilder mockRequest = 
+				MockMvcRequestBuilders.post("users/adduser")
+	            	.contentType(MediaType.APPLICATION_JSON)
+	            	.accept(MediaType.APPLICATION_JSON)
+	            	.content(this.mapper.writeValueAsString(user6));
 
 			mockMvc.perform(mockRequest)
 					.andExpect(status().isOk())
@@ -170,10 +176,11 @@ public class UserDemoApiControllerTest {
 		user2.setEmail("max123@gmail.com");
 		
 		
-		MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.put("/users/update/2")
-	            .contentType(MediaType.APPLICATION_JSON)
-	            .accept(MediaType.APPLICATION_JSON)
-	            .content(this.mapper.writeValueAsString(user2));
+		MockHttpServletRequestBuilder mockRequest = 
+				MockMvcRequestBuilders.put("/users/update/2")
+	            	.contentType(MediaType.APPLICATION_JSON)
+	            	.accept(MediaType.APPLICATION_JSON)
+	            	.content(this.mapper.writeValueAsString(user2));
 		
 		mockMvc.perform(mockRequest)
 				.andExpect(status().isOk())

@@ -15,7 +15,7 @@ import sg.nus.iss.userdemo.request.UserFriendsRequestEntity;
 public interface UserService {
 
 	
-	List<User> getAllUsers();
+	List<User> findAllUsers();
 	
 	User findUserById(int id);
 	
@@ -28,7 +28,8 @@ public interface UserService {
 	Set<String> getAllFriendsByUserId(int userId);
 	
 	
-	ResponseEntity<Map<String, Object>> addUserFriends(UserFriendsRequestEntity userFriendsRequestEntity);
+	ResponseEntity<Map<String, Object>> addUserFriends(
+			UserFriendsRequestEntity userFriendsRequestEntity);
 
 
 	List<User> findUsersByName(String name);

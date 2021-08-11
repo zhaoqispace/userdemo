@@ -42,7 +42,8 @@ import sg.nus.iss.userdemo.request.UserFriendsRequestEntity;
 @RestController
 public class UserDemoApiController {
 	
-	private final Logger logger = LoggerFactory.getLogger(UserDemoApiController.class);
+	private final Logger logger = 
+			LoggerFactory.getLogger(UserDemoApiController.class);
 	
 	private UserService uService;
 	
@@ -70,8 +71,9 @@ public class UserDemoApiController {
 	@GetMapping("/users")
 	public ResponseEntity<List<User>> getAllUsers() {
 		try {
-			List<User> userlist= uService.getAllUsers();
-			if (userlist.isEmpty() || userlist.size() == 0) {
+			List<User> userlist= uService.findAllUsers();
+			if (userlist.isEmpty() || 
+					userlist.size() == 0) {
 				return new ResponseEntity<List<User>>(HttpStatus.NO_CONTENT);
 			}
 			return new ResponseEntity<List<User>>(userlist, HttpStatus.OK);
@@ -112,10 +114,13 @@ public class UserDemoApiController {
 	
 	// update a user
 	@PutMapping("/users/update/{userid}")
-	public ResponseEntity<User> updateUser (@PathVariable("userid") int userId, @RequestBody User userDetails) {
+	public ResponseEntity<User> updateUser (
+				@PathVariable("userid") int userId, 
+				@Valid @RequestBody User userDetails) {
 	
 		try {
-			return new ResponseEntity<User>(uService.updateUser(userId, userDetails), HttpStatus.OK);
+			return new ResponseEntity<User>(
+					uService.updateUser(userId, userDetails), HttpStatus.OK);
 			
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
@@ -125,14 +130,17 @@ public class UserDemoApiController {
 	
 	// delete a user by id
 	@DeleteMapping("/users/delete/{userid}") 
-	public ResponseEntity<HttpStatus> deleteUser(@PathVariable("userid") int userId) {	
+	public ResponseEntity<HttpStatus> deleteUser(
+			@PathVariable("userid") int userId) {	
 		try {
 				uService.deleteUser(userId);
-				return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
+				return new ResponseEntity<HttpStatus>(
+						HttpStatus.NO_CONTENT);
 			
 		}catch (Exception ex) {
 			logger.error(ex.getMessage());
-			return new ResponseEntity<HttpStatus>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<HttpStatus>(
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -142,42 +150,54 @@ public class UserDemoApiController {
 	// both users will be friends to each other,
 	// which means we will add user2 to the friendlist of user1
 	// and add user1 to the friendlist of user2
-	@PostMapping("/users/userFriendRequest")
-	public ResponseEntity<Map<String, Object>> userFriendRequest(@RequestBody UserFriendsRequestEntity userFriendsRequestEntity) {
+	@PostMapping("/users/userfriendsrequest")
+	public ResponseEntity<Map<String, Object>> userFriendRequest(
+			@RequestBody UserFriendsRequestEntity userFriendsRequestEntity) {
+		
 		return uService.addUserFriends(userFriendsRequestEntity);
 	}
 	
 	
 	// get all friends for a user
 	@GetMapping("/users/friends/{userid}")
-	public ResponseEntity<Set<String>> getAllFriendsByuserId(@PathVariable("userid") int userId) {
+	public ResponseEntity<Set<String>> getAllFriendsByuserId(
+			@PathVariable("userid") int userId) {
 
 		try {
 			//show the email instead of user object
-			Set<String> allFriendsByUserId= uService.getAllFriendsByUserId(userId);		
+			Set<String> allFriendsByUserId= 
+					uService.getAllFriendsByUserId(userId);		
 			
-			return new ResponseEntity<Set<String>>(allFriendsByUserId, HttpStatus.OK);
-		}catch(NoSuchElementException ex) {
+			return new ResponseEntity<Set<String>>(
+					allFriendsByUserId, HttpStatus.OK);
+		} catch(NoSuchElementException ex) {
 			// log exception first, then return Conflict
 	        logger.error(ex.getMessage());
-			return new ResponseEntity<Set<String>>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Set<String>>(
+					HttpStatus.NOT_FOUND);
 		}	
 	}
 	
 	
-	// find friends by distance
+	// get friends nearby
 	@GetMapping("/users/friendsnearby/{name}")
-	public ResponseEntity<List<String>> getFriendsNearby(@PathVariable("name") String name) {
+	public ResponseEntity<List<String>> getFriendsNearby(
+			@PathVariable("name") String name) {
 		
 		try {
 			// only show the top 2 nearest friends
-			List<String> friendsNearby = uService.getFriendsByDistance(name);
-			return new ResponseEntity<List<String>>(friendsNearby, HttpStatus.OK);
+			List<String> friendsNearby = 
+					uService.getFriendsByDistance(name);
+			
+			return new ResponseEntity<List<String>>(
+					friendsNearby, HttpStatus.OK);
 			
 		} catch(NoSuchElementException ex) {
 			// log exception first, then return Conflict
 	        logger.error(ex.getMessage());
-			return new ResponseEntity<List<String>>(HttpStatus.NOT_FOUND);
+	        
+			return new ResponseEntity<List<String>>(
+					HttpStatus.NOT_FOUND);
 		}	
 	}
 
